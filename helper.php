@@ -105,7 +105,7 @@ function new_pg($config = [],$name = '')
 {
     global $_pg_connects;
     $_pg = new \Medoo\Medoo([
-        'type' => 'mysql',
+        'type' => $config['type']?:'mysql',
         'host' => $config['host'],
         'database' => $config['name'],
         'username' => $config['user'],

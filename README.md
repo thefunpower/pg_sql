@@ -6,6 +6,8 @@
 composer require thefunpower/pg_sql
 ~~~
 
+pgsql需要 pdo_pgsql 扩展
+
 ~~~
 /**
 * 数据库连接
