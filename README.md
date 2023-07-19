@@ -15,7 +15,7 @@ $pg_config['host'] = '127.0.0.1';
 $pg_config['user'] = 'root';
 $pg_config['pwd']  = '111111';
 $pg_config['port'] = 3306; 
-$pg_config['type'] = 'mysql'; 
+$pg_config['type'] = 'pgsql';  // mysql pgsql
 //main read default
 new_pg($pg_config,'default');
 
