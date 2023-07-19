@@ -10,11 +10,11 @@ composer require thefunpower/pg_sql
 /**
 * 数据库连接
 */
-$pg_config['db_name'] = 'test'; 
-$pg_config['db_host'] = '127.0.0.1';
-$pg_config['db_user'] = 'root';
-$pg_config['db_pwd']  = '111111';
-$pg_config['db_port'] = 3306; 
+$pg_config['pg_name'] = 'test'; 
+$pg_config['pg_host'] = '127.0.0.1';
+$pg_config['pg_user'] = 'root';
+$pg_config['pg_pwd']  = '111111';
+$pg_config['pg_port'] = 3306; 
 //main read default
 new_pg($main_pg_config,'default');
 ~~~
@@ -54,7 +54,7 @@ $where['ORDER'] = ['id'=>'DESC'];
 ~~~
 $date1 = '2022-11-01';
 $date2 = '2022-12-14';
-db_between_date($field,$date1,$date2)
+pg_between_date($field,$date1,$date2)
 ~~~
 
 ## where 两个月份之间
@@ -62,7 +62,7 @@ db_between_date($field,$date1,$date2)
 ~~~
 $date1 = '2022-11';
 $date2 = '2022-12';
-db_between_month($field,$date1,$date2
+pg_between_month($field,$date1,$date2
 ~~~
 
 ## 查寻一条记录
@@ -82,7 +82,7 @@ $res = pg_get("products",$where);
 ## 分页
 
 ~~~
-$res  = db_pager("products","*",$where);
+$res  = pg_pager("products","*",$where);
 ~~~
 
 ## 使用原生方法 
@@ -92,7 +92,7 @@ $res  = db_pager("products","*",$where);
 https://medoo.in/api/where
 
 ~~~
-$res = db()->select("products",['id'],[]); 
+$res = pg()->select("products",['id'],[]); 
 ~~~ 
 
 ## 查寻某个字段
@@ -105,13 +105,13 @@ print_r($res);
 ## 写入记录
 
 ~~~
-db_insert($table, $data = [],$don_run_action = false)
+pg_insert($table, $data = [],$don_run_action = false)
 ~~~
 
 ## 更新记录
 
 ~~~
-db_update($table, $data = [], $where = [],$don_run_action = false)
+pg_update($table, $data = [], $where = [],$don_run_action = false)
 ~~~
 
 ## 取最小值
@@ -134,7 +134,7 @@ pg_get_avg
 ## 删除 
 
 ~~~
-db_del($table, $where)
+pg_del($table, $where)
 ~~~
 
 
@@ -143,8 +143,8 @@ db_del($table, $where)
 ### 写入记录前
 
 ~~~
-do_action("db_insert.$table.before", $data);
-do_action("db_save.$table.before", $data);
+do_action("pg_insert.$table.before", $data);
+do_action("pg_save.$table.before", $data);
 ~~~
 
 ### 写入记录后
@@ -152,23 +152,23 @@ do_action("db_save.$table.before", $data);
 其中`$data`有 `id` 及 `data`
 
 ~~~
-do_action("db_insert.$table.after", $action_data);
-do_action("db_save.$table.after", $action_data);
+do_action("pg_insert.$table.after", $action_data);
+do_action("pg_save.$table.after", $action_data);
 ~~~
 
 ### 更新记录前
 
 ~~~
-do_action("db_update.$table.before", $data);
-do_action("db_save.$table.before", $data);
+do_action("pg_update.$table.before", $data);
+do_action("pg_save.$table.before", $data);
 ~~~
 
 ### 更新记录后
 
 其中`$data`有 `id`   `data` `where`
 ~~~
-do_action("db_update.$table.after", $action_data);
-do_action("db_save.$table.after", $action_data); 
+do_action("pg_update.$table.after", $action_data);
+do_action("pg_save.$table.after", $action_data); 
 ~~~
 
 ~~~
@@ -178,7 +178,7 @@ do_action("pg_get_one.$table", $v);
 ## 删除前
 
 ~~~
-do_action("db_insert.$table.del", $where);
+do_action("pg_insert.$table.del", $where);
 ~~~
 
 
@@ -197,7 +197,7 @@ get_table_fields($table, $has_key  = true)
 ## 返回数据库允许的数据，传入其他字段自动忽略
 
 ~~~
-db_allow($table, $data)
+pg_allow($table, $data)
 ~~~
 
 ## 显示数据库表结构，支持markdown格式
@@ -222,8 +222,8 @@ is_json($data)
 ## SQL查寻
 
 ~~~
-db_query($sql, $raw = null)
-do_action("db_query", $all) 
+pg_query($sql, $raw = null)
+do_action("pg_query", $all) 
 ~~~
 
 其中`$sql`为`select * from table_name where user_id=:user_id`
@@ -235,10 +235,10 @@ do_action("db_query", $all)
 
 ## 事务
 
-需要`inner db`支持
+需要`inner pg`支持
 
 ~~~
-db_action(function()use($data)){
+pg_action(function()use($data)){
 
 });
 ~~~
@@ -246,19 +246,19 @@ db_action(function()use($data)){
 ## id锁
 
 ~~~
-db_for_update($table,$id)
+pg_for_update($table,$id)
 ~~~
 
 ## 设置分页总记录数
 
 ~~~
-db_pager_count($nums = null)
+pg_pager_count($nums = null)
 ~~~ 
 
 ## 连表查寻
 
 ~~~
-$data = db_pager("do_order",
+$data = pg_pager("do_order",
 ["[><]do_mini_user" => ["uid" => "id"]],
 [
     "do_order.id",

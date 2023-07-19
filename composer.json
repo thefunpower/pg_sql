@@ -9,9 +9,7 @@
             "name": "ken.sun",
             "email": "yiiphp@foxmail.com" 
         }
-    ],
-    "require": {  
-    }, 
+    ], 
     "autoload": { 
         "files": [
             "./Medoo.php",

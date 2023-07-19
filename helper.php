@@ -144,8 +144,8 @@ function medoo_pg()
         return $pg_connect;
     }
 }
-if(!function_exists('db')){
-    function db(){
+if(!function_exists('pg')){
+    function pg(){
         return medoo_pg();
     }
 }
@@ -265,7 +265,7 @@ function pg_pager_html($arr = [])
     } else {
         $size = $_pg_par['size'] ?: 20;
     }
-    $paginate = new medoo_paginate($count, $size);
+    $paginate = new pg_pager_html($count, $size);
     if ($page_url) {
         $paginate->url = $page_url;
     }
@@ -378,7 +378,7 @@ function pg_insert($table, $data = [],$don_run_action = false)
         do_action("pg_save.$table.before", $data);
     }
     foreach($data as $k=>$v){ 
-        if(get_table_field_is_json($table,$k)){
+        if(pg_field_is_json($table,$k)){
             if($v && !is_array($v)){
                 $arr = json_decode($v,true);
                 if($arr){
@@ -439,7 +439,7 @@ function pg_update($table, $data = [], $where = [],$don_run_action = false)
         do_action("pg_save.$table.before", $data);
     }
     foreach($data as $k=>$v){
-        if(get_table_field_is_json($table,$k)){
+        if(pg_field_is_json($table,$k)){
             if($v && !is_array($v)){
                 $arr = json_decode($v,true);
                 if($arr){
@@ -694,7 +694,7 @@ function pg_delete($table, $where)
  * @author sun <sunkangchina@163.com>
  * @return void
  */
-function show_tables($table)
+function pg_tables($table)
 {
     $sql = "SHOW TABLES LIKE '%$table%';";
     $all = medoo_pg()->query($sql);
@@ -708,7 +708,7 @@ function show_tables($table)
 /**
  * 取表中字段
  */
-function get_table_fields($table, $has_key  = true)
+function pg_fields($table, $has_key  = true)
 {
     $sql   = "SHOW FULL FIELDS FROM `".$table."`";
     $lists = medoo_pg()->query($sql);
@@ -742,7 +742,7 @@ function pg_allow($table, $data)
  * @version 1.0.0
  * @author sun <sunkangchina@163.com>
  */
-function database_tables($name = null, $show_markdown = false)
+function pg_tables_markdown($name = null, $show_markdown = false)
 {
     global $config;
     if (!$name) {
@@ -773,7 +773,7 @@ function database_tables($name = null, $show_markdown = false)
 /**
  * 取表中json字段
  */
-function get_table_field_json($table){
+function pg_field_json($table){
     static $table_fields;
     if(!isset($table_fields[$table])){
       $all = get_table_fields($table); 
@@ -790,8 +790,8 @@ function get_table_field_json($table){
 /**
  * 判断表中的字段是不是json
  */
-function get_table_field_is_json($table,$field){
-    $table_fields = get_table_field_json($table); 
+function pg_field_is_json($table,$field){
+    $table_fields = pg_field_json($table); 
     if(isset($table_fields[$field])){
       return true;
     }else{
@@ -807,7 +807,7 @@ function get_table_field_is_json($table,$field){
 function pg_row_json_to_array($table_name,&$row_data = []){ 
     if(is_array($row_data)){
         foreach ($row_data as $key=>$val) {
-            if(is_string($val) && get_table_field_is_json($table_name,$key)){  
+            if(is_string($val) && pg_field_is_json($table_name,$key)){  
                 $row_data[$key] = json_decode($val,true)?:[];   
             }
             else if(is_string($val) && is_json($val)){
@@ -926,7 +926,7 @@ if(!function_exists('do_action')){
  *类似淘宝分页 
  *  
  *   
- *$paginate = new medoo_paginate($row->num,1); 
+ *$paginate = new pg_pager_html($row->num,1); 
  *$paginate->url = $this->url;
  *$limit = $paginate->limit;
  *$offset = $paginate->offset;
@@ -956,7 +956,7 @@ if(!function_exists('do_action')){
  */
  
 
-class medoo_paginate
+class pg_pager_html
 {
     public $page;
     public $pages;
