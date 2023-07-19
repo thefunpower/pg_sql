@@ -1,0 +1,21 @@
+{
+    "name": "thefunpower/pg_sql",
+    "type": "library",
+    "description": "pg_sql",
+    "keywords": ["php"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "ken.sun",
+            "email": "yiiphp@foxmail.com" 
+        }
+    ],
+    "require": {  
+    }, 
+    "autoload": { 
+        "files": [
+            "./Medoo.php",
+            "./helper.php"
+        ]
+    }
+}
