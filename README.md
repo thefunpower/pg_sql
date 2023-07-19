@@ -10,13 +10,23 @@ composer require thefunpower/pg_sql
 /**
 * 数据库连接
 */
-$pg_config['pg_name'] = 'test'; 
-$pg_config['pg_host'] = '127.0.0.1';
-$pg_config['pg_user'] = 'root';
-$pg_config['pg_pwd']  = '111111';
-$pg_config['pg_port'] = 3306; 
+$pg_config['name'] = 'ec'; 
+$pg_config['host'] = '127.0.0.1';
+$pg_config['user'] = 'root';
+$pg_config['pwd']  = '111111';
+$pg_config['port'] = 3306; 
+$pg_config['type'] = 'mysql'; 
 //main read default
-new_pg($main_pg_config,'default');
+new_pg($pg_config,'default');
+
+$one = pg_get("article",['id[>]'=>1],1);
+$all = pg_get("article",['id[>]'=>1,'LIMIT'=>2]);
+$all = pg_get("article","id",['id[>]'=>1,'LIMIT'=>2]);
+$all = pg_get("article","id,title",['id[>]'=>1,'LIMIT'=>2]);
+$all = pg_get("article",["id","title"],['id[>]'=>1,'LIMIT'=>2]);
+pg_insert("article",['title'=>'ttt']);
+pg_update("article",['title'=>'ttt'],['id'=>1]);
+
 ~~~
 
 ## $where条件

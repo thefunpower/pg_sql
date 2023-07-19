@@ -101,19 +101,19 @@ function pg_can_run_update($sql = ''){
 /** 
  * 连接数据库
  */
-function new_db($config = [],$name = '')
+function new_pg($config = [],$name = '')
 {
     global $_pg_connects;
     $_pg = new \Medoo\Medoo([
         'type' => 'mysql',
-        'host' => $config['pg_host'],
-        'database' => $config['pg_name'],
-        'username' => $config['pg_user'],
-        'password' => $config['pg_pwd'],
+        'host' => $config['host'],
+        'database' => $config['name'],
+        'username' => $config['user'],
+        'password' => $config['pwd'],
         // [optional]
         'charset'   => 'utf8mb4',
         'collation' => 'utf8mb4_general_ci',
-        'port'      => $config['pg_port'],
+        'port'      => $config['port'],
         'prefix'    => '',
         'error'     => PDO::ERRMODE_SILENT,
         // Read more from http://www.php.net/manual/en/pdo.setattribute.php.
@@ -307,26 +307,86 @@ function pg_get_error()
  * @param array $where  条件 [LIMIT=>1]  
  * @return array
  */
-function pg_get($table, $join = null, $columns = null, $where = null)
-{
-    if(!$columns || is_numeric($columns)){
-        $columns = $join;
-        $join = '*';
-        if(is_numeric($columns)){
-            $where['LIMIT'] = $columns;
-        }
-    }
+function pg_get($table, $join = null, $columns = null, $where = null){ 
+    if(is_numeric($columns)){ 
+        if($columns == 1){
+            $columns = [];
+            $is_field = false;
+            if(is_array($join)){
+                foreach($join as $k=>$v){
+                    if(is_numeric($k)){
+                        $is_field = true;
+                        break;
+                    }
+                }
+            }
+            if(is_string($join)){
+                $is_field = true;
+            }
+            if(!$join){
+                $join = '*';
+                $columns = []; 
+                $where   = [];
+            }else{
+                if(!$is_field){  
+                    $columns = $join; 
+                    $where = [];
+                } 
+            } 
+            return pg_get_one($table, $join,$columns, $where);
+        } else{
+           $join['LIMIT'] = $columns;
+        } 
+    }  
+    return _pg_get($table, $join, $columns, $where);  
+}
+
+function _pg_get($table, $join = null, $columns = null, $where = null)
+{ 
+    $support_join = [
+        '[>]',  // LEFT JOIN
+        '[<]',  // RIGHT JOIN
+        '[<>]', // FULL JOIN
+        '[><]', //INNER JOIN
+    ];
+    /*
+    pg_get("post", [ 
+        "[>]account" => ["author_id" => "user_id"]
+    ], [
+        "post.title",
+        "account.city"
+    ]);
+    */
+    $is_join  = false;
+    $is_field = false;
     if (is_array($join)) {
         foreach ($join as $k => $v) {
+            if(in_array($k,$support_join)){
+                $is_join = true;
+            }
             if (is_string($v) && strpos($v, '(') !== false) {
                 $join[$k] = pg_raw($v);
             }
+            if(is_numeric($k)){
+                $is_field = true;
+            }
         }
+        if(!$is_field && !$is_join){
+            $columns = $join;
+            $join    = "*";
+        } 
+    }  else if( is_string($join) && $join != "*"){
+        if(strpos($join,',')!==false){
+            $join =  explode(',',$join);
+        }else{
+            $join =  [$join];    
+        }
+        
     }
     if (is_string($columns) && strpos($columns, 'WHERE') !== FALSE) {
         $columns = pg_raw($columns);
-    } 
-    $all =  medoo_pg()->select($table, $join, $columns, $where);
+    }  
+    $all =  medoo_pg()->select($table, $join, $columns, $where); 
     if($all){
         foreach($all as &$v){
             pg_row_json_to_array($table,$v);
@@ -727,7 +787,7 @@ function pg_fields($table, $has_key  = true)
  */ 
 function pg_allow($table, $data)
 {
-    $fields = get_table_fields($table);
+    $fields = pg_fields($table);
     foreach ($data as $k => $v) {
         if (!$fields[$k]) {
             unset($data[$k]);
@@ -746,7 +806,7 @@ function pg_tables_markdown($name = null, $show_markdown = false)
 {
     global $config;
     if (!$name) {
-        $name = $config['pg_name'];
+        $name = $config['name'];
     }
     $sql  = "SHOW TABLE STATUS FROM `{$name}`";
     $all  = pg_query($sql, []);
@@ -776,7 +836,7 @@ function pg_tables_markdown($name = null, $show_markdown = false)
 function pg_field_json($table){
     static $table_fields;
     if(!isset($table_fields[$table])){
-      $all = get_table_fields($table); 
+      $all = pg_fields($table); 
       $table_fields_row = [];
       foreach($all as $k=>$v){
         if($v['Type'] == 'json'){
