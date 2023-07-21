@@ -945,7 +945,6 @@ if(!function_exists("add_action")){
         $_app['actions'][$name][] = ['func'=>$call,'level'=>$level];  
     }
 }
-
 /**
  * 执行动作
  * @param  string $name 动作名
@@ -954,15 +953,16 @@ if(!function_exists("add_action")){
  * @author sun <sunkangchina@163.com>
  * @return  mixed
  */
-if(!function_exists('do_action')){
+if(!function_exists("do_action")){
     function do_action($name, &$par = null)
     {
         global $_app;
         if (!is_array($_app)) {
             return;
         }
+        if(!isset($_app['actions'][$name])){return;}
         $calls  = $_app['actions'][$name]; 
-        $calls  = array_order_by($calls,'level',SORT_DESC);  
+        $calls  = lib\Arr::order_by($calls,'level',SORT_DESC);  
         if ($calls) {
             foreach ($calls as $v) {
                 $func = $v['func'];
@@ -970,8 +970,7 @@ if(!function_exists('do_action')){
             }
         }
     }
-}
-
+} 
 
 
 
