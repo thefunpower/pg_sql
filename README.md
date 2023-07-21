@@ -80,15 +80,13 @@ pg_between_month($field,$date1,$date2
 ## 查寻一条记录
 
 ~~~
-$res = pg_get_one("products","*",$where);
-$res = pg_get_one("products",$where);
+$res = pg_get_one("products","*",$where); 
 ~~~
 
 ## 所有记录
 
 ~~~
-$res = pg_get("products","*",$where);
-$res = pg_get("products",$where);
+$res = pg_get("products","*",$where); 
 ~~~
 
 ## 分页
@@ -197,13 +195,13 @@ do_action("pg_insert.$table.del", $where);
 ## 显示所有表名
 
 ~~~
-show_tables($table)
+pg_tables($table)
 ~~~
 
 ## 取表中字段
 
 ~~~
-get_table_fields($table, $has_key  = true)
+pg_fields($table, $has_key  = true)
 ~~~
 
 ## 返回数据库允许的数据，传入其他字段自动忽略
@@ -215,7 +213,7 @@ pg_allow($table, $data)
 ## 显示数据库表结构，支持markdown格式
 
 ~~~
-database_tables($name = null, $show_markdown = false)
+pg_tables_markdown($name = null, $show_markdown = false)
 ~~~
 
 ## 数组排序
