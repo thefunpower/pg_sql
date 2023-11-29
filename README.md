@@ -1,6 +1,6 @@
 # 数据库操作
 
-对 `Medoo Version: 2.1.10` 再封装，让操作更简单。
+## 建议使用 [thefunpower/db_medoo](https://github.com/thefunpower/db_medoo)
 
 ~~~
 composer require thefunpower/pg_sql
