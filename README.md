@@ -1,6 +1,6 @@
 # 数据库操作
 
-## 建议使用 [thefunpower/db_medoo](https://github.com/thefunpower/db_medoo)
+## 已归档，建议使用 [thefunpower/db_medoo](https://github.com/thefunpower/db_medoo)
 
 ~~~
 composer require thefunpower/pg_sql
