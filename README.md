@@ -299,6 +299,6 @@ https://medoo.in/api/where
 
 ## License
 
-The [MIT](LICENSE) License (MIT)
+[Apache License 2.0](LICENSE)
 
 
